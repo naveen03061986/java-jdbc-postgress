@@ -1,12 +1,12 @@
 package com.example.jdbc;
 
-import com.example.jdbc.dao.UserDao;
-import com.example.jdbc.model.User;
-import com.example.jdbc.util.DBUtil;
-
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
+
+import com.example.jdbc.dao.UserDao;
+import com.example.jdbc.model.User;
+import com.example.jdbc.util.DBUtil;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,6 +28,8 @@ public class Main {
             System.out.println("3) Delete user");
             System.out.println("4) List all users");
             System.out.println("5) Exit");
+            System.out.println("6) List all users (old way)");
+            System.out.println("7) Create user (old way)");
             System.out.print("Enter choice: ");
             String choice = sc.nextLine().trim();
             try {
@@ -43,6 +45,12 @@ public class Main {
                         break;
                     case "4":
                         listUsers(dao);
+                        break;
+                    case "6":
+                        oldWayOflistUsers(dao);
+                        break;
+                    case "7":
+                        createUserOldWay(dao, sc);
                         break;
                     case "5":
                         System.out.println("Goodbye");
@@ -73,6 +81,21 @@ public class Main {
         System.out.println("Created user with id=" + u.getUserId());
     }
 
+    private static void createUserOldWay(UserDao dao, Scanner sc) throws Exception {
+        System.out.print("User name: ");
+        String name = sc.nextLine().trim();
+        System.out.print("Password: ");
+        String pass = sc.nextLine().trim();
+        System.out.print("Age: ");
+        int age = Integer.parseInt(sc.nextLine().trim());
+        System.out.print("Address: ");
+        String addr = sc.nextLine().trim();
+        System.out.print("Qualification: ");
+        String qual = sc.nextLine().trim();
+        User u = new User(name, pass, age, addr, qual);
+        dao.createUserOldWay(u);
+    }
+
     private static void editUser(UserDao dao, Scanner sc) throws Exception {
         System.out.print("User id to edit: ");
         int id = Integer.parseInt(sc.nextLine().trim());
@@ -101,6 +124,17 @@ public class Main {
 
     private static void listUsers(UserDao dao) throws Exception {
         List<User> list = dao.getAllUsers();
+        if (list.isEmpty()) {
+            System.out.println("No users found");
+            return;
+        }
+        for (User u : list) {
+            System.out.println(u);
+        }
+    }
+
+    private static void oldWayOflistUsers(UserDao dao) throws Exception {
+        List<User> list = dao.getALLUserOldWayList();
         if (list.isEmpty()) {
             System.out.println("No users found");
             return;
